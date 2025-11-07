@@ -119,7 +119,7 @@ function initializeWorker() {
         try {
             // (‼️‼️ อัปเกรด: Cache Busting ‼️‼️)
             // (v16.0 - The Cockroach)
-            aiWorker = new Worker('worker.js?v=1.0.6'); 
+            aiWorker = new Worker('worker.js?v=17.0'); 
             
             aiWorker.onmessage = handleWorkerMessage;
             aiWorker.onerror = handleWorkerError;
