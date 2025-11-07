@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>OC Baccarat AI [God-Tier v16.0]</title>
+<link rel="manifest" href="manifest.json">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="loadingOverlay">
+  <div class="loader-logo">OC</div>
+  <div class="loader-text" id="loaderStatus">กำลังอุ่นเครื่อง 'สมอง AI' (IndexedDB)...</div>
+</div>
+<div class="app" id="app">
+
+  <div class="header">
+    <div class="h-title">
+      <div class="logo">OC</div>
+      <div>
+        <h1>OC Baccarat AI</h1>
+        <div class="counter" id="appStatus">สถานะ: กำลังเริ่มต้น...</div>
+      </div>
+    </div>
+    <div class="app-controls">
+      <button class="icon-btn" id="btnToggleHistoryHub" title="ศูนย์วิเคราะห์และประวัติ" onclick="openModal('historyHubModal')">🗂️</button>
+      <button class="icon-btn" id="btnToggleSettings" title="ตั้งค่า" onclick="openModal('settingsModal')">⚙️</button>
+      <button class="icon-btn" id="btnToggleHelp" title="ช่วยเหลือ" onclick="openModal('helpModal')">❓</button>
+    </div>
+  </div>
+
+  <div class="grid-main">
+    <div class="grid-col-1">
+      
+      <div class="panel pred-card">
+        <div id="predCircle" class="pred-circle">-</div>
+        <div id="confText" class="pred-muted">ความมั่นใจ: -%</div>
+        <div class="progress"><div id="progressBar"></div></div>
+        <div id="condBox" class="pred-muted" style="width:100%;text-align:center">เงื่อนไข: กำลังรอผล...</div>
+      </div>
+      
+      <div class="panel" id="bettingPanel">
+        <h2>💡 คำแนะนำการเดินเงิน</h2>
+        <div style="text-align:center; padding: 10px 0;">
+          <h3 id="betSuggestion" style="font-size: 28px; margin: 0; color: var(--text-muted);">-</h3>
+          <div id="betReason" style="font-size: 13px; color: var(--text-muted;">รอ Signal...</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>บันทึกผลลัพธ์ <span class="muted">(แตะ = เร็ว / แตะค้าง = ละเอียด)</span></h2>
+        <div class="controls-grid" id="controlsGrid">
+          <button class="btn btnP" id="btnPlayer">PLAYER</button>
+          <button class="btn btnB" id="btnBanker">BANKER</button>
+          <button class="btn btnT" id="btnTie">TIE</button>
+          
+          <div class="flyout-menu" id="flyoutP">
+            <button onclick="onResult('P3')">PLAYER (3 ใบ)</button>
+            <button onclick="onResult('P2')">PLAYER (2 ใบ)</button>
+          </div>
+          <div class="flyout-menu" id="flyoutB">
+            <button onclick="onResult('B3')">BANKER (3 ใบ)</button>
+            <button onclick="onResult('B2')">BANKER (2 ใบ)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>ประสิทธิภาพ Signal (ตาที่ AI ส่ง Signal เท่านั้น)</h2>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <h3 id="winRateShoe" class="win">- %</h3>
+            <div class="label">Winrate (ขอนนี้)</div>
+          </div>
+          <div class="stat-item">
+            <h3><span id="winShoe" class="win">0</span> / <span id="loseShoe" class="lose">0</span></h3>
+            <div class="label">ชนะ / แพ้ (ขอนนี้)</div>
+          </div>
+          <div class="stat-item">
+            <h3 id="winRateGlobal">- %</h3>
+            <div class="label">Winrate (รวม)</div>
+          </div>
+          <div class="stat-item">
+            <h3><span id="winGlobal">0</span> / <span id="loseGlobal">0</span></h3>
+            <div class="label">ชนะ / แพ้ (รวม)</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="panel bigroad-wrap">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h2>Big Road <span class="muted">(ทึบ=2ใบ / โปร่ง=3ใบ)</span></h2>
+          <div class="kv" style="font-size:13px">นับถอยหลัง: <span id="countdownText" style="color:var(--warn)">20</span>s</div>
+        </div>
+        <div id="bigroad" class="bigroad">
+          </div>
+      </div>
+      
+      <div class="panel derived-roads-panel">
+        
+        <div class="derived-road-wrap">
+          <h3>Big Eye Road</h3>
+          <div class="dr-grid" id="bigEyeRoadGrid">
+            </div>
+        </div>
+        
+        <div class="derived-road-wrap">
+          <h3>Small Road</h3>
+          <div class="dr-grid" id="smallRoadGrid">
+            </div>
+        </div>
+        
+        <div class="derived-road-wrap">
+          <h3>Cockroach</h3>
+          <div class="dr-grid" id="cockroachRoadGrid">
+            </div>
+        </div>
+        
+      </div>
+      <div id="advancedPanels" style="display:flex; flex-direction:column; gap:12px;">
+          <div class="panel">
+            <h2>🧠 แดชบอร์ด "สมอง AI" (Shadow Mode)</h2>
+            <div class="kv-list" id="aiDashboard">
+              <div class="kv"><div class="key">รูปแบบหลัก <span class="expert-winrate" id="perfMain">--%</span></div><div class="val" id="expMain">-</div></div>
+              <div class="kv"><div class="key">ตารางย่อย <span class="expert-winrate" id="perfDerived">--%</span></div><div class="val" id="expDerived">-</div></div>
+              <div class="kv"><div class="key">กฎไพ่ <span class="expert-winrate" id="perfRules">--%</span></div><div class="val" id="expRules">-</div></div>
+              <div class="kv"><div class="key">โมเมนตัม (10) <span class="expert-winrate" id="perfStats">--%</span></div><div class="val" id="expStats">-</div></div>
+              <div class="kv"><div class="key">กฎพิเศษ <span class="expert-winrate" id="perfSpecial">--%</span></div><div class="val" id="expSpecial">-</div></div>
+              <div class="kv"><div class="key">Sim: สถิติ <span class="expert-winrate" id="perfSimA">--%</span></div><div class="val" id="expSimA">-</div></div>
+              <div class="kv"><div class="key">Sim: รูปแบบ <span class="expert-winrate" id="perfSimB">--%</span></div><div class="val" id="expSimB">-</div></div>
+              <div class="kv"><div class="key">Sim: ผันผวน <span class="expert-winrate" id="perfSimC">--%</span></div><div class="val" id="expSimC">-</div></div>
+              <div class="kv"><div class="key">นักขุด (Miner) <span class="expert-winrate" id="perfMiner">--%</span></div><div class="val" id="expMiner">-</div></div>
+              
+              <div class="kv" style="border-top:1px solid var(--card-border);margin-top:6px;padding-top:10px">
+                <div class="key" style="font-weight:bold;color:var(--text)">🔥 มติสุดท้าย (Hunter)</div>
+                <div class="val" id="expFinal" style="font-size:16px;font-weight:bold">-</div>
+              </div>
+            </div>
+          </div>
+    
+          <div class="panel">
+            <h2>🛰️ สถานะระบบ</h2>
+            <div class="kv-list">
+              <div class="kv"><div class="key">ชีพจร "สมอง AI"</div><div class="val err" id="statusHeartbeat">ตัดการเชื่อมต่อ</div></div>
+              <div class="kv"><div class="key">ความจุ "สมอง" (DB)</div><div class="val" id="statusStorage">คำนวณ...</div></div>
+              <div class="kv"><div class="key">ประวัติ (รวม)</div><div class="val" id="statusTotalHands">0 ตา</div></div>
+              <div class="kv"><div class="key">ประวัติ (ขอนนี้)</div><div class="val" id="statusShoeHands">0 ตา</div></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2>🕹️ ควบคุมด่วน</h2>
+            <div style="display:flex;flex-wrap:wrap;gap:8px" id="quickControls">
+              <button class="btn-small" onclick="onUndo()">UNDO (ยกเลิกตาเดียว)</button>
+              <button class="btn-small" onclick="onNewShoe()">เริ่มขอนไพ่ใหม่</button>
+              <button class="btn-small" onclick="onEditHistory()">แก้ไขประวัติ</button>
+              <button class="btn-small" onclick="onDeleteShoe()" style="background:var(--error);color:var(--text)">🗑️ ลบขอนนี้</button>
+            </div>
+          </div>
+        </div> 
+    </div> 
+  </div> 
+</div> 
+
+<div class="modal-overlay" id="historyHubModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🗂️ ศูนย์วิเคราะห์และประวัติ</h2>
+      <div class="modal-close" onclick="closeModal('historyHubModal')">&times;</div>
+    </div>
+    
+    <div class="panel" style="margin-bottom: 12px;">
+        <h2>สถิติตลอดชีพ (Global)</h2>
+        <div class="kv-list" id="hubGlobalStats">
+            <div class="kv"><div class="key">ประวัติ (รวม)</div><div class="val">- ตา</div></div>
+            <div class="kv"><div class="key">จำนวนขอนไพ่ (รวม)</div><div class="val">- ขอน</div></div>
+        </div>
+    </div>
+    
+    <div class="panel" style="margin-bottom: 12px;">
+        <h2>ประสิทธิภาพ 'Shadow Mode' (ตลอดชีพ)</h2>
+        <div class="kv-list" id="hubExpertPerf">
+            </div>
+    </div>
+    
+    <div class="panel">
+      <h2>ประวัติขอนไพ่ (5 ขอนล่าสุด)</h2>
+      <div id="shoeHistorySummary" style="max-height: 200px; overflow-y: auto; font-size: 13px; color: var(--text-muted);">
+        กำลังโหลด...
+      </div>
+    </div>
+    
+  </div>
+</div>
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>⚙️ ตั้งค่าและข้อมูล</h2>
+      <div class="modal-close" onclick="closeModal('settingsModal')">&times;</div>
+    </div>
+    
+    <h3>การควบคุม AI</h3>
+    <div class="kv-list" style="margin-bottom: 16px;">
+        <div class="kv">
+            <div class="key">เปิดใช้งาน Meta-mind<br><span style="font-size:11px; color:var(--text-dark)">(ระบบ AI ถ่วงน้ำหนัก)</span></div>
+            <input type="checkbox" id="toggleMetaMind" onchange="onToggleMetaMind(this.checked)">
+        </div>
+    </div>
+
+    <div class="kv" style="margin-bottom:10px">
+      <div class="key" style="font-size:14px">ความมั่นใจ (Trigger)</div>
+      <div class="val" id="settingsRiskLabel">Balanced (5/9)</div>
+    </div>
+    <input type="range" min="1" max="9" value="5" class="slider" id="settingsRiskSlider" style="width:100%">
+    <div style="font-size:12px;color:var(--text-muted;margin-top:4px" id="settingsRiskDesc">
+        ปรับ "เสียงโหวต" ขั้นต่ำที่ AI (Hunter) ต้องมี ก่อนส่ง Signal
+    </div>
+    <div class="slider-controls">
+        <button class="btn-small" onclick="onSetTriggerDefault()">ค่าเริ่มต้น</button>
+        <button class="btn-small" onclick="onCancelTrigger()">ยกเลิก</button>
+        <button class="btn-small" onclick="onSaveTrigger()" style="background:var(--green);color:var(--text)">💾 บันทึก</button>
+    </div>
+    
+    <h3 style="margin-top:20px">การแสดงผล (Performance)</h3>
+    <div class="kv-list">
+        <div class="kv">
+            <div class="key">โหมดประหยัดพลังงาน<br><span style="font-size:11px; color:var(--text-dark)">(ปิดเอฟเฟกต์ทั้งหมด)</span></div>
+            <input type="checkbox" id="togglePowerMode" onchange="onTogglePowerMode(this.checked)">
+        </div>
+        <div class="kv">
+            <div class="key">ปิดการสั่นตอบสนอง</div>
+            <input type="checkbox" id="toggleHaptics" onchange="onToggleHaptics(this.checked)">
+        </div>
+    </div>
+
+    <h3 style="margin-top:20px">การจัดการ "สมอง" (Backup)</h3>
+    <p style="font-size:13px;color:var(--text-muted);line-height:1.5">
+      "สมอง" (IndexedDB) ถูกเก็บในเครื่องคุณ แต่ถ้าล้าง Chrome มันจะหาย! <br>
+      ให้กด **Export** บ่อยๆ เพื่อสำรอง "ประวัติ" (หนังสือเรียน) ไว้
+      หากข้อมูลหาย ให้ใช้ **Import** เพื่อ "ฝึกสมองใหม่"
+    </p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px">
+      <button class="btn-small" onclick="onExportCSV()">💾 Export ประวัติ (CSV)</button>
+      <button class="btn-small" onclick="onImportCSV()">⤴️ Import ประวัติ (CSV)</button>
+      <button class="btn-small" onclick="onRetrain()" style="background:var(--warn);color:#000">🔁 ฝึกสมองใหม่ (จาก Import)</button>
+    </div>
+    <textarea id="csvPasteArea" rows="4" style="width:100%;margin-top:10px;background:#050505;color:#fff;padding:8px;border-radius:6px" placeholder="หรือ 'วาง' ข้อมูล CSV ที่คัดลอกมาที่นี่..."></textarea>
+    
+    <h3 style="margin-top:20px">โซนอันตราย (บำรุงรักษา)</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px">
+        <button class="btn-small" onclick="onRunBIST()" style="background:var(--warn);color:#000">🩺 ตรวจสุขภาพสมอง (BIST)</button>
+        <button class="btn-small" onclick="onResyncBrain()" style="background:var(--warn);color:#000">🩺 ซิงค์สถิติสมองใหม่</button>
+        <button class="btn-small" onclick="onClearMemory()" style="background:var(--red);color:var(--text)">🔥 ล้าง "สมอง" (IndexedDB)</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="helpModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>❓ ช่วยเหลือ</h2>
+      <div class="modal-close" onclick="closeModal('helpModal')">&times;</div>
+    </div>
+    <div class="tooltip-content">
+      <p>ยินดีต้อนรับสู่ OC Baccarat AI (God-Tier)!</p>
+      <p><strong>การป้อนข้อมูล (Smart Interface)</strong><br>
+         - <strong>แตะ (Tap):</strong> ป้อนข้อมูลแบบเร็ว (`PLAYER` หรือ `BANKER`) AI จะถือว่าเป็น `_UNKNOWN` (ไม่รู้จำนวนไพ่)<br>
+         - <strong>แตะค้าง (Hold):</strong> เปิดเมนูย่อย เพื่อป้อนข้อมูลแบบละเอียด (`2 ใบ` หรือ `3 ใบ`)
+      </p>
+      <p><strong>🧠 Meta-mind (AI ถ่วงน้ำหนัก)</strong><br>
+         คุณสามารถเปิดโหมดนี้ได้ใน <strong>⚙️ (ตั้งค่า)</strong><br>
+         - <strong>โหมดปิด (Default):</strong> AI นับ 1 สิทธิ์ 1 เสียง (เช่น 5/9 เสียง)<br>
+         - <strong>โหมดเปิด (God-Tier):</strong> AI จะ "ถ่วงน้ำหนัก" โหวตตาม "Winrate" จริงของผู้เชี่ยวชาญแต่ละตัว
+      </p>
+      <p><strong>🩺 ซิงค์สถิติสมองใหม่</strong><br>
+         หาก "ตรวจสุขภาพสมอง (BIST)" แล้วพบว่าข้อมูลไม่ตรงกัน ให้ใช้ปุ่มนี้เพื่อ "บังคับ" ให้ AI คำนวณสถิติและ Winrate ทั้งหมดใหม่จากประวัติจริง
+      </p>
+      <p><strong>Big Road (ทึบ vs โปร่ง)</strong><br>
+         - <strong>วงกลมทึบ (P/B):</strong> ชนะด้วยไพ่ 2 ใบ (P2 / B2)<br>
+         - <strong>วงกลมโปร่ง (P/B):</strong> ชนะด้วยไพ่ 3 ใบ (P3 / B3)<br>
+         - <strong>วงกลมครึ่งๆ (จาง):</strong> ผลลัพธ์ที่ "ไม่ระบุ" (`_UNKNOWN`)
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="historyModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>✏️ แก้ไขประวัติ (History Editor)</h2>
+      <div class="modal-close" onclick="closeModal('historyModal')">&times;</div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted;line-height:1.5">
+      ใช้สำหรับ "ผ่าตัด" ข้อมูลขยะ (ที่กดพลาด) ออกจากสมอง AI
+    </p>
+    <div style="margin-top:16px; margin-bottom:10px;">
+        <label for="historyFilter">กรองข้อมูล:</label>
+        <select id="historyFilter">
+            <option value="all">แสดง 100 ตาล่าสุด</option>
+            <option value="unknown">เฉพาะที่ 'ไม่ระบุ' (Back-fill Mode)</option>
+        </select>
+    </div>
+    <div style="max-height:400px;overflow-y:auto;border:1px solid var(--card-border);border-radius:8px">
+      <table id="historyEditorTable">
+        <thead>
+          <tr>
+            <th>ตาที่</th>
+            <th>ผลลัพธ์</th>
+            <th>แก้ไขเป็น...</th>
+          </tr>
+        </thead>
+        <tbody id="historyEditorBody">
+          </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-content">
+    <h2 id="confirmModalTitle">ยืนยันการกระทำ</h2>
+    <p id="confirmModalBody">คุณแน่ใจหรือไม่?</p>
+    <div id="confirmModalButtons">
+        <button class="btn-small" id="confirmBtnNo" style="flex:1">🟢 ไม่ใช่</button>
+        <button class="btn-small" id="confirmBtnYes" style="flex:1; background:var(--error); color:var(--text)">🔴 ยืนยัน</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="status-overlay" id="fatalErrorOverlay">
+  <h1>ข้อผิดพลาดร้ายแรง</h1>
+  <p id="fatalErrorMessage">"สมอง AI" (Web Worker) หยุดทำงาน ระบบไม่สามารถประมวลผลต่อได้<br><br>กรุณา "ปิด" และ "เปิด" แอปนี้ใหม่ทั้งหมด (Restart)</p>
+</div>
+
+<div class="status-overlay" id="retrainOverlay">
+  <h1>กำลังฝึกสมองใหม่</h1>
+  <p>กำลังอ่านประวัติ (CSV) และสร้าง "สมอง" (IndexedDB) ขึ้นมาใหม่...<br>กรุณาอย่าปิดหน้านี้</p>
+  <div id="retrainProgress">
+    <div id="retrainProgressBar"></div>
+  </div>
+  <p style="margin-top:10px;font-size:14px" id="retrainStatus">สถานะ: เริ่มต้น...</p>
+</div>
+
+<script src="app.js" defer></script>
+</body>
+</html>
