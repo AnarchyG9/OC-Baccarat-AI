@@ -1,0 +1,441 @@
+/* ========== 1. ROOT VARIABLES & GLOBAL RESET ========== */
+:root{
+  --bg: #000000;
+  --bg-gradient: linear-gradient(180deg, #0a0a0a, #000000);
+  --card: #0d0d0d;
+  --card-border: rgba(255, 255, 255, 0.08);
+  --shadow: rgba(0, 0, 0, 0.6);
+  --glass: rgba(255, 255, 255, 0.03);
+  --glass-light: rgba(255, 255, 255, 0.05);
+  
+  --text: #ececec;
+  --text-muted: #888;
+  --text-dark: #555;
+  
+  --blue: #007bff;
+  --blue-glow: 0 0 18px rgba(0,123,255,0.4);
+  --red: #dc3545;
+  --red-glow: 0 0 18px rgba(220,53,69,0.4);
+  --green: #28a745;
+  --green-glow: 0 0 18px rgba(40,167,69,0.4);
+  --gold: #d4af37;
+  --gold-glow: 0 0 18px rgba(212,175,55,0.4);
+  
+  --warn: #ffc107;
+  --error: #dc3545;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Noto Sans Thai",Arial;color:var(--text);background:var(--bg-gradient)}
+button,input,select,textarea{font-family:inherit}
+
+/* ========== 2. APP LAYOUT & GRID (‼️‼️ แก้ไข ‼️‼️) ========== */
+.app{max-width:980px;margin:0 auto;padding:12px;display:none} /* ซ่อนแอปไว้ก่อนตอนเริ่ม */
+/* (ลบ .grid-main 2 คอลัมน์ทิ้ง) */
+.grid-main{
+    display:grid;
+    grid-template-columns: 1fr; /* (เหลือ 1 คอลัมน์) */
+    gap:12px;
+    margin-top:12px;
+}
+.grid-col-1{display:flex;flex-direction:column;gap:12px;min-width:0} /* (min-width: 0 คือคาถาแก้จอล้น) */
+
+/* ========== 3. PANELS (CARDS) ========== */
+.panel{
+  background:var(--card);
+  border-radius:14px;
+  padding:14px 16px;
+  border:1px solid var(--card-border);
+  box-shadow:0 10px 40px var(--shadow);
+}
+.panel h2{font-size:16px;margin:0 0 12px 0;color:var(--text);border-bottom:1px solid var(--card-border);padding-bottom:10px}
+.panel h2 .muted{font-size:13px;color:var(--text-muted);font-weight:400;margin-left:8px}
+
+/* ========== 4. HEADER & LOGO ========== */
+.header{display:flex;justify-content:space-between;align-items:center}
+.h-title{display:flex;gap:12px;align-items:center}
+.logo{
+  width:46px;height:46px;border-radius:10px;
+  background:linear-gradient(135deg,var(--gold),#c79b28);
+  display:flex;align-items:center;justify-content:center;
+  color:#000;font-weight:900;font-size:20px;
+  box-shadow:0 6px 18px rgba(212,175,55,0.18), inset 0 -4px 12px rgba(255,255,255,0.06);
+}
+.header h1{font-size:18px;margin:0 0 4px 0}
+.counter{font-size:13px;color:var(--text-muted)}
+
+/* ========== 5. PREDICTION SIGNAL (Main) ========== */
+.pred-card{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  background:linear-gradient(180deg, var(--glass), rgba(0,0,0,0.1));
+}
+.pred-circle{
+  width:160px;height:160px;border-radius:999px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;font-weight:900;color:var(--text);
+  text-shadow:0 4px 18px var(--shadow);
+  box-shadow:0 12px 40px var(--shadow), inset 0 -8px 24px var(--glass);
+  transition:all 0.3s ease;
+  background:linear-gradient(180deg,#333,#111); /* Default 'WAIT' state */
+}
+/* (‼️‼️ เพิ่ม: แอนิเมชั่น "ชีพจร" ‼️‼️) */
+.pred-circle.waiting {
+    animation: breathing 2.5s infinite ease-in-out;
+}
+@keyframes breathing {
+    0% { box-shadow:0 12px 40px var(--shadow), inset 0 -8px 24px var(--glass); }
+    50% { box-shadow:0 12px 50px rgba(150,150,150,0.2), inset 0 -8px 24px var(--glass); }
+    100% { box-shadow:0 12px 40px var(--shadow), inset 0 -8px 24px var(--glass); }
+}
+/* (‼️‼️ เพิ่ม: แอนิเมชั่น "นักล่า" ‼️‼️) */
+.pred-circle.P{background:linear-gradient(180deg,var(--blue),#1e6fe8); box-shadow:var(--blue-glow),0 12px 40px var(--shadow), inset 0 -8px 24px var(--glass); animation: pulse-blue 1s ease-out;}
+.pred-circle.B{background:linear-gradient(180deg,var(--red),#b02a2a); box-shadow:var(--red-glow),0 12px 40px var(--shadow), inset 0 -8px 24px var(--glass); animation: pulse-red 1s ease-out;}
+.pred-circle.T{background:linear-gradient(180deg,var(--green),#1f8b3a); box-shadow:var(--green-glow),0 12px 40px var(--shadow), inset 0 -8px 24px var(--glass); animation: pulse-green 1s ease-out;}
+@keyframes pulse-blue { from { box-shadow:0 0 60px rgba(0,123,255,0.8); } to { box-shadow:var(--blue-glow); } }
+@keyframes pulse-red { from { box-shadow:0 0 60px rgba(220,53,69,0.8); } to { box-shadow:var(--red-glow); } }
+@keyframes pulse-green { from { box-shadow:0 0 60px rgba(40,167,69,0.8); } to { box-shadow:var(--green-glow); } }
+
+.pred-muted{font-size:13px;color:var(--text-muted)}
+.progress{width:100%;height:4px;background:var(--glass);border-radius:4px;overflow:hidden;margin-top:4px}
+.progress > div{height:100%;width:0;background:var(--gold);transition:width 0.5s ease}
+
+/* ========== (‼️‼️ เพิ่ม: BETTING STRATEGY ‼️‼️) ========== */
+#betSuggestion {
+    font-size: 28px;
+    margin: 0;
+    transition: color 0.3s ease;
+}
+#betReason {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+/* ========== (จบส่วนเพิ่ม) ========== */
+
+
+/* ========== 6. BUTTON CONTROLS (Smart Interface) ========== */
+.controls-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;
+  position:relative; /* (สำหรับเมนูย่อย) */
+}
+.btn{
+  position:relative; overflow:hidden; /* for gloss effect */
+  padding:16px;border-radius:10px;border:0;
+  font-weight:800;font-size:18px;color:var(--text);
+  box-shadow:0 8px 20px var(--shadow);
+  cursor:pointer;
+  transition:all 0.2s ease;
+  user-select:none; /* (ป้องกันการเลือกข้อความ) */
+}
+.btn:active{transform:scale(0.97);box-shadow:0 4px 10px var(--shadow)}
+/* (‼️‼️ เพิ่ม: Dynamic Gloss (Placeholder) ‼️‼️) */
+.btn::after{
+  content:'';position:absolute;top:0;left:-50%;width:200%;height:60%;
+  background:linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02));
+  transform:rotate(15deg);
+}
+.btnP{background:linear-gradient(180deg,var(--blue),#1e6fe8)}
+.btnB{background:linear-gradient(180deg,var(--red),#b02a2a)}
+.btnT{background:linear-gradient(180deg,var(--green),#1f8b3a);grid-column:1 / -1}
+
+/* (เมนูย่อย 'แตะค้าง' - Flyout Menu) */
+.flyout-menu{
+  display:none; /* (ซ่อนไว้) */
+  position:absolute;
+  bottom:100%; /* (เด้งขึ้นข้างบน) */
+  left:0;right:0;
+  margin:0 10% 10px 10%; /* (ลอยตรงกลาง) */
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:10px;
+  box-shadow:0 -10px 40px var(--shadow);
+  z-index:10;
+  animation: flyout-in 0.2s ease-out;
+}
+.flyout-menu button{
+  display:block;width:100%;padding:14px;
+  background:transparent;border:0;color:var(--text);
+  font-size:15px;font-weight:600;
+}
+.flyout-menu button:first-child{border-bottom:1px solid var(--card-border)}
+.flyout-menu button:hover{background:var(--glass-light)}
+@keyframes flyout-in {
+  from { opacity:0; transform:translateY(20px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.btn-small{
+  padding:8px 12px;font-size:13px;border-radius:8px;font-weight:600;
+  background:var(--glass-light);
+  border:1px solid var(--card-border);
+  /* (‼️‼️ แก้ไข: ฟ้อนต์สีขาว ‼️‼️) */
+  color: var(--text);
+}
+.btn-small:hover{background:var(--glass)}
+
+/* ========== 7. STATS & WINRATE ========== */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(100px, 1fr));gap:10px;width:100%;text-align:center;margin-top:10px}
+.stat-item h3{font-size:18px;margin:0 0 4px 0;color:var(--text)}
+.stat-item .label{font-size:12px;color:var(--text-muted)}
+.stat-item .win{color:var(--green)}
+.stat-item .lose{color:var(--red)}
+
+/* ========== 8. BIG ROAD (โค้ดแก้ไข) ========== */
+/* 8A. (กล่องหุ้ม) - (‼️‼️ นี่คือ "การแก้ไข" ‼️‼️) */
+.bigroad-wrap{
+  min-height:240px;
+  position:relative;
+  overflow-x:auto; /* (เพิ่มคำสั่ง "Scroll" แนวนอน) */
+  min-width:0; /* (เพิ่ม "คาถา" ปราบ Flexbox) */
+}
+/* 8B. (ตาราง) - (‼️‼️ นี่คือ "การแก้ไข" ‼️‼️) */
+.bigroad{
+  /* width:100%; (ลบ) */
+  height:220px;
+  /* overflow-x:auto; (ลบ) */
+  overflow-y:hidden;
+  background:transparent;padding:10px 6px;
+  display:grid;grid-auto-flow:column;grid-auto-columns:36px;
+  gap:6px;
+  border-top:1px solid var(--card-border);margin-top:12px;
+}
+/* ========== (จบส่วนแก้ไข) ========== */
+
+.br-col{display:grid;grid-auto-rows:36px;gap:6px}
+.br-cell{
+  width:34px;height:34px;border-radius:999px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;color:var(--text);font-size:13px;
+  box-shadow:0 6px 18px var(--shadow);
+  /* (‼️‼️ เพิ่ม: TIE Line ‼️‼️) */
+  position: relative;
+  overflow: hidden;
+}
+/* (‼️‼️ เพิ่ม: TIE Line ‼️‼️) */
+.br-cell .tie-line {
+    position: absolute;
+    width: 140%;
+    height: 4px;
+    background: var(--green);
+    transform: rotate(45deg);
+    box-shadow: 0 0 10px var(--green-glow);
+}
+/* Cell types for 2 vs 3 cards */
+.br-P{background:var(--blue)} /* 2-card win (solid) */
+.br-P3{background:transparent; border:3px solid var(--blue)} /* 3-card win (outline) */
+.br-P_UNKNOWN{background:rgba(0,123,255,0.5)} /* (Lazy Button) */
+.br-B{background:var(--red)}
+.br-B3{background:transparent; border:3px solid var(--red)}
+.br-B_UNKNOWN{background:rgba(220,53,69,0.5)} /* (Lazy Button) */
+/* .br-T (ลบ: TIE ไม่ใช่วงกลม) */
+
+
+/* ========== 9. AI DASHBOARD & SYSTEM STATUS (ย้ายไป Modal) ========== */
+.kv-list{display:flex;flex-direction:column;gap:10px;font-size:13px}
+.kv{display:flex;justify-content:space-between;align-items:center}
+.kv .key{color:var(--text-muted)}
+.kv .val{color:var(--text);font-weight:600}
+.kv .val.P{color:var(--blue)}
+.kv .val.B{color:var(--red)}
+.kv .val.T{color:var(--green)}
+.kv .val.warn{color:var(--warn)}
+.kv .val.ok{color:var(--green)}
+.kv .val.err{color:var(--error)}
+/* (สำหรับ Shadow Mode Winrate) */
+.expert-winrate{
+  font-size:11px; color:var(--text-muted); margin-left:8px;
+  background:var(--glass); padding:2px 4px; border-radius:4px;
+}
+/* (สำหรับ Trigger Slider) */
+.slider-controls{ margin-top: 10px; display: flex; gap: 8px; justify-content: flex-end; }
+
+/* ========== 10. APP CONTROLS (Icons) ========== */
+.app-controls{display:flex;gap:10px}
+.icon-btn{
+  background:var(--glass-light);color:var(--text-muted);
+  border:1px solid var(--card-border);
+  width:38px;height:38px;border-radius:10px;
+  font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+.icon-btn:hover{background:var(--glass);color:var(--text)}
+
+/* ========== 11. MODALS (Hidden Panels) ========== */
+.modal-overlay{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);
+  z-index:100;display:none; /* Hidden by default */
+}
+.modal-content{
+  position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);
+  width:90%;max-width:500px;
+  background:var(--card);border-radius:14px;
+  border:1px solid var(--card-border);
+  box-shadow:0 10px 60px var(--shadow);
+  padding:20px;
+  /* (เพิ่ม) ให้ Modal เลื่อนได้ ถ้าจอมันเล็ก */
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.modal-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--card-border);padding-bottom:10px;margin-bottom:16px}
+.modal-header h2{margin:0;font-size:18px}
+.modal-close{font-size:24px;cursor:pointer;color:var(--text-muted)}
+/* Specific modal styles */
+#settingsRiskSlider{width:100%}
+#historyEditorTable{width:100%;font-size:13px;border-collapse:collapse}
+#historyEditorTable th, #historyEditorTable td{padding:8px;text-align:left;border-bottom:1px solid var(--card-border)}
+/* Tooltip/Help styles */
+.tooltip-content{font-size:14px;line-height:1.6;color:var(--text)}
+.tooltip-content strong{color:var(--gold)}
+
+/* (‼️‼️ เพิ่ม: "หน้าต่างยืนยัน 'กันพลาด'" ‼️‼️) */
+#confirmModal .modal-content { max-width: 320px; }
+#confirmModalBody { font-size: 16px; line-height: 1.6; margin-bottom: 20px; }
+#confirmModalButtons { display: flex; gap: 10px; }
+
+/* ========== 12. ERROR & STATUS OVERLAYS ========== */
+.status-overlay{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(220,53,69,0.9); /* Red error overlay */
+  backdrop-filter:blur(10px);
+  z-index:200;display:none; /* Hidden by default */
+  flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:20px;
+}
+.status-overlay h1{font-size:24px;color:#fff}
+.status-overlay p{font-size:16px;color:#fff;max-width:400px}
+/* Re-train Progress */
+#retrainOverlay{background:rgba(0,0,0,0.9)}
+#retrainProgress{width:80%;max-width:400px;height:20px;background:var(--glass);border-radius:10px;overflow:hidden;margin-top:16px}
+#retrainProgressBar{width:0;height:100%;background:var(--gold);transition:width 0.2s ease}
+
+/* ========== 13. LOADING OVERLAY ========== */
+#loadingOverlay{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:var(--bg-gradient);
+  z-index:9999;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  transition: opacity 0.5s ease;
+}
+.loader-logo{
+  width:60px;height:60px;border-radius:12px;
+  background:linear-gradient(135deg,var(--gold),#c79b28);
+  display:flex;align-items:center;justify-content:center;
+  color:#000;font-weight:900;font-size:24px;
+  box-shadow:0 6px 18px rgba(212,175,55,0.18);
+  animation: pulse 2s infinite ease-in-out;
+}
+.loader-text{
+  margin-top:16px;
+  font-size:14px;
+  color:var(--text-muted);
+}
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ========== (‼️‼️ อัปเกรด v16.0: DERIVED ROADS ‼️‼️) ========== */
+.derived-roads-panel {
+    display: grid;
+    /* (‼️‼️ อัปเกรด v16.0: แบ่ง 3 คอลัมน์สำหรับมือถือ ‼️‼️) */
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+}
+
+.derived-road-wrap {
+    background: var(--glass);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 10px 8px;
+    min-width: 0; /* (คาถา Flexbox) */
+}
+
+.derived-road-wrap h3 {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 0 0 10px 0;
+    font-weight: 600;
+}
+
+.dr-grid {
+    position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 104px; /* (16px * 6 แถว) + (2px * 5 gap) = 106px */
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 16px; /* (ขนาดเซลล์ 16px) */
+    gap: 2px;
+}
+
+.dr-col {
+    display: grid;
+    grid-auto-rows: 16px;
+    gap: 2px;
+}
+
+.dr-cell {
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: transparent;
+    box-sizing: border-box; /* (ป้องกัน border ขยายกล่อง) */
+    position: relative; /* (‼️‼️ v16.0: สำหรับเส้นทับ ‼️‼️) */
+    overflow: hidden; /* (‼️‼️ v16.0: สำหรับเส้นทับ ‼️‼️) */
+}
+
+/* (Big Eye Road: Hollow Circles) */
+.dr-cell.ber-R { 
+    border: 3px solid var(--red);
+}
+.dr-cell.ber-B { 
+    border: 3px solid var(--blue);
+}
+/* ========== (จบส่วน v14.0) ========== */
+
+
+/* ========== (‼️‼️ เพิ่ม v15.0: SMALL ROAD ‼️‼️) ========== */
+/* (Small Road: Solid Circles) */
+.dr-cell.sr-R {
+    width: 14px; /* (เล็กกว่า Big Eye) */
+    height: 14px;
+    background: var(--red);
+    align-self: center; /* (จัดกลาง) */
+    justify-self: center; /* (จัดกลาง) */
+}
+.dr-cell.sr-B {
+    width: 14px;
+    height: 14px;
+    background: var(--blue);
+    align-self: center;
+    justify-self: center;
+}
+/* ========== (จบส่วน v15.0) ========== */
+
+
+/* ========== (‼️‼️ เพิ่ม v16.0: COCKROACH ROAD ‼️‼️) ========== */
+/* (Cockroach Road: Slashes) */
+.dr-cell.cr-R::after {
+    content: '';
+    position: absolute;
+    width: 140%;
+    height: 3px;
+    background: var(--red);
+    transform: rotate(45deg);
+    top: 6px;
+    left: -3px;
+}
+.dr-cell.cr-B::after {
+    content: '';
+    position: absolute;
+    width: 140%;
+    height: 3px;
+    background: var(--blue);
+    transform: rotate(45deg);
+    top: 6px;
+    left: -3px;
+}
+/* ========== (จบส่วน v16.0) ========== */
